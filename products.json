@@ -10,16 +10,6 @@
     "stock": 21
   },
   {
-    "id": 2,
-    "title": "producto prueba 2",
-    "description": "Este es un producto prueba 2",
-    "price": 200,
-    "status": true,
-    "thumbnail": [],
-    "code": "abc122",
-    "stock": 22
-  },
-  {
     "id": 3,
     "title": "producto prueba 3",
     "description": "Este es un producto prueba 3",

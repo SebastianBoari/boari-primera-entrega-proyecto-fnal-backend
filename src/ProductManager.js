@@ -2,15 +2,18 @@ import fs from 'fs';
 
 export default class ProductManager {
 
-    #products 
-    #cart
+    #products
+    cart 
     path
+    pathCart
 
-    constructor (path){
+    constructor (path, pathCart){
         this.#products = [];
-        this.#cart;
+        this.cart = [];
         this.path = path;
+        this.pathCart = pathCart;
         this.#loadProducts();
+        this.#loadCarts();
     };
 
     async #loadProducts(){
@@ -57,7 +60,7 @@ export default class ProductManager {
         };
     };
 
-    #idGenerator () {
+    #idGenerator(){
         let id = 0;
         if(this.#products.length === 0){
             id = 1;
@@ -90,7 +93,7 @@ export default class ProductManager {
         if (index !== -1) {
             this.#products[index] = {...this.#products[index], ...updatedProduct};
             this.#saveProducts();
-            console.error(`El producto se ha editado satisfactoriamente.`);
+            console.log(`El producto se ha editado satisfactoriamente.`);
         } else {
             console.error(`No se encontró el producto con id ${id}`);
         };
@@ -101,13 +104,68 @@ export default class ProductManager {
         if (index !== -1) {
             this.#products.splice(index, 1);
             this.#saveProducts();
+            console.log(`El producto se ha eliminado satisfactoriamente.`);
         } else {
             console.error(`No se encontró el producto con id ${id}`);
         };
     };
+
+
+
+    // CART
+    async #loadCarts(){
+        try {
+            const data = await fs.promises.readFile(this.pathCart, 'utf-8');
+            this.cart = JSON.parse(data);
+        } catch (err) {
+            console.error(`Error al leer el archivo: ${err}`);
+            this.cart = [];
+        };
+    };
+
+    async #saveCart() {
+        try {
+            const data = JSON.stringify(this.cart, null, 2); 
+            await fs.promises.writeFile(this.pathCart, data);
+        } catch (err) {
+            console.error(`Error al guardar el archivo: ${err}`);
+        };
+    };
+
+    #cartIdGenerator(){
+        let id = 0;
+        if(this.cart.length === 0){
+            id = 1;
+        } else {
+            id = this.cart[this.cart.length-1].id + 1;
+        };
+        return id;
+    };
+
+    addToCart (id, quantity) {
+        if(!id || !quantity) return console.error("Por favor completa todos los campos");
+
+        const newCart = {
+            id: this.#cartIdGenerator(),
+            products: [{
+                id: id,
+                quantity: quantity
+            }],
+        };
+
+        this.cart.push(newCart);
+        this.#saveCart();
+        console.log(`Producto exitosamente agregado al carrito ${this.#cartIdGenerator() - 1}`)
+    };
+
+    getCartById (id) {
+        return this.cart.find((cart) => cart.id === id);
+    };
+
+
 };
 
-export const productManager = new ProductManager('./products.json');
+export const productManager = new ProductManager('./products.json', './cart.json');
 
 /*
 productManager.addProduct("producto prueba 1", "Este es un producto prueba 1", 100, true, "", "abc121", 21);

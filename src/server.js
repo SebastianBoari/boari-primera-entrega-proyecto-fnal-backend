@@ -54,12 +54,21 @@ app.put('/products/:id', (req, res) => {
     res.status(200).send(productManager.updateProduct(id, body));
 });
 
-app.delete('/products/:id', (req, res) => {
 
+// Eliminar producto: http://localhost:8080/products/2
+app.delete('/products/:id', (req, res) => {
+    const id = +req.params.id;
+
+    res.status(200).send(productManager.deleteProduct(id));
 });
 
 
+// CARRITO
+// http://localhost:8080/cart
+app.post('/cart', (req, res)=>{
 
+    res.status(201).send(productManager.addToCart(1, 5));
+});
 
 
 
