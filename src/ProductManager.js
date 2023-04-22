@@ -3,12 +3,14 @@ import fs from 'fs';
 export default class ProductManager {
 
     #products 
+    #cart
     path
 
     constructor (path){
-        this.#products = []
-        this.path = path
-        this.#loadProducts()
+        this.#products = [];
+        this.#cart;
+        this.path = path;
+        this.#loadProducts();
     };
 
     async #loadProducts(){
@@ -88,6 +90,7 @@ export default class ProductManager {
         if (index !== -1) {
             this.#products[index] = {...this.#products[index], ...updatedProduct};
             this.#saveProducts();
+            console.error(`El producto se ha editado satisfactoriamente.`);
         } else {
             console.error(`No se encontró el producto con id ${id}`);
         };
