@@ -66,11 +66,18 @@ app.delete('/products/:id', (req, res) => {
 // CARRITO
 // http://localhost:8080/cart
 app.post('/cart', (req, res)=>{
+    const pId = req.body.id;
+    const pQuantity = req.body.quantity;
 
-    res.status(201).send(productManager.addToCart(1, 5));
+    res.status(201).send(productManager.addToCart(pId, pQuantity));
 });
 
+// http://localhost:8080/cart/4
+app.get('/cart/:id', (req, res) => {
+    const id = Number(req.params.id);
 
+    res.status(200).send(productManager.getCartById(id));
+});
 
 
 
