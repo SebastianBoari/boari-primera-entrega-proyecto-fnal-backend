@@ -142,7 +142,7 @@ export default class ProductManager {
         return id;
     };
 
-    addToCart (id, quantity) {
+    newCart (id, quantity) {
         if(!id || !quantity) return console.error("Por favor completa todos los campos");
 
         const newCart = {
@@ -162,7 +162,31 @@ export default class ProductManager {
         return this.cart.find((cart) => cart.id === id);
     };
 
+    addToCart(cartId, productId) {
+        const productIndex = this.#products.findIndex((product) => product.id === productId);
+        if (productIndex !== -1) {
 
+            const cartIndex = this.cart.findIndex((cart) => cart.id === cartId);
+            if (cartIndex !== -1) {
+                const productInCartIndex = this.cart[cartIndex].products.findIndex((product) => product.id === productId);
+                if (productInCartIndex !== -1) {
+                    this.cart[cartIndex].products[productInCartIndex].quantity += 1;
+                    this.#saveCart();
+                    console.log(`El producto se ha agregado exitosamente al carrito`);
+                } else {
+                    this.cart[cartIndex].products.push({id: productId, quantity: 1});
+                    this.#saveCart();
+                    console.log(`El producto se ha agregado exitosamente al carrito`);
+                };
+            } else {
+                console.error(`No se encontró el carrito con id ${cartId}`);
+            };
+
+        } else {
+            console.error(`No se encontró el producto con id ${productId}`);
+            console.log(typeof productId)
+        };
+    };
 };
 
 export const productManager = new ProductManager('./products.json', './cart.json');

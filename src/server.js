@@ -64,14 +64,16 @@ app.delete('/products/:id', (req, res) => {
 
 
 // CARRITO
+// Crear carrito con primer producto
 // http://localhost:8080/cart
 app.post('/cart', (req, res)=>{
     const pId = req.body.id;
     const pQuantity = req.body.quantity;
 
-    res.status(201).send(productManager.addToCart(pId, pQuantity));
+    res.status(201).send(productManager.newCart(pId, pQuantity));
 });
 
+// Devolver un carrito por su id
 // http://localhost:8080/cart/4
 app.get('/cart/:id', (req, res) => {
     const id = Number(req.params.id);
@@ -79,6 +81,15 @@ app.get('/cart/:id', (req, res) => {
     res.status(200).send(productManager.getCartById(id));
 });
 
+// Agregar un producto a un carrito
+// http://localhost:8080/cart/1/product/1   (Agregar una unidad mas al carrito)
+// http://localhost:8080/cart/1/product/2   (Agregar un producto nuevo al carrito)
+app.post('/cart/:cid/product/:pid', (req, res)=>{
+    const pId = +req.params.pid;
+    const cid = +req.params.cid;
+
+    res.status(200).send(productManager.addToCart(cid, pId));
+});
 
 
 
